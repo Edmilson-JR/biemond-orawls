@@ -72,8 +72,8 @@ define orawls::bsu (
     }
 
     exec { "change memory params for ${patch_file}":
-      command   => "sed -e's/MEM_ARGS=\"-Xms256m -Xmx512m\"/MEM_ARGS=\"-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\"/g' ${middleware_home_dir}/utils/bsu/bsu.sh > ${download_dir}/bsu.sh && mv ${download_dir}/bsu.sh ${middleware_home_dir}/utils/bsu/bsu.sh;chmod +x ${middleware_home_dir}/utils/bsu/bsu.sh",
-      unless    => "grep 'MEM_ARGS=\"-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\"' ${middleware_home_dir}/utils/bsu/bsu.sh",
+      command   => "sed -e's/MEM_ARGS=\"-Xms256m -Xmx512m\"/MEM_ARGS=\"-Xms256m -Xmx1024m -Duser.language=en -Duser.country=US\"/g' ${middleware_home_dir}/utils/bsu/bsu.sh > ${download_dir}/bsu.sh && mv ${download_dir}/bsu.sh ${middleware_home_dir}/utils/bsu/bsu.sh;chmod +x ${middleware_home_dir}/utils/bsu/bsu.sh",
+      unless    => "grep 'MEM_ARGS=\"-Xms256m -Xmx1024m\"' ${middleware_home_dir}/utils/bsu/bsu.sh",
       before    => Bsu_patch["${middleware_home_dir}:${patch_id}"],
       path      => $exec_path,
       user      => $os_user,
@@ -82,14 +82,18 @@ define orawls::bsu (
       logoutput => $log_output,
     }
 
-    exec { "patch policy for ${patch_file}":
-      command   => "bash -c \"{ echo 'grant codeBase \\\"file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> ${weblogic_home_dir}/server/lib/weblogic.policy\"",
-      unless    => "grep 'file:${middleware_home_dir}/patch_wls1036/patch_jars/-' ${weblogic_home_dir}/server/lib/weblogic.policy",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-      require   => Bsu_patch["${middleware_home_dir}:${patch_id}"],
+    if (($version == 1036) or ($version == 1111)) {
+
+      exec { "patch policy for ${patch_file}":
+        command   => "bash -c \"{ echo 'grant codeBase \\\"file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> ${weblogic_home_dir}/server/lib/weblogic.policy\"",
+        unless    => "grep 'file:${middleware_home_dir}/patch_wls1036/patch_jars/-' ${weblogic_home_dir}/server/lib/weblogic.policy",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+        require   => Bsu_patch["${middleware_home_dir}:${patch_id}"],
+      }
+
     }
   }
 
