@@ -47,6 +47,7 @@ module Puppet
     property :targettype
     property :jndinames
     property :drivername
+    property :datasourcetype
     property :url
     property :usexa
     property :user
@@ -59,6 +60,7 @@ module Puppet
     property :fanenabled
     property :onsnodelist
     property :mincapacity
+    property :statementcachetype
     property :statementcachesize
     property :testconnectionsonreserve
     property :secondstotrustidlepoolconnection
@@ -74,7 +76,7 @@ module Puppet
     property :connectionreservetimeoutseconds
 
     add_title_attributes(:datasource_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

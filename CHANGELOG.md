@@ -1,5 +1,17 @@
 # History
 
+## 1.0.60
+- fix nil or '' values on onprovider_specific of wls_authentication_provider
+
+## 1.0.59
+- Allow forward slash in the wls type title name, old title regex for detecting the wls_setting name was too eager but the use of slash in the wls_setting name is now not allowed anymore.
+
+## 1.0.58
+- Option to ignore the defaultCoherenceCluster on a domain
+- restrictive permissions for orainst & nodemanager.properties
+- FMW webcenter sites support
+- allow multiple remote middleware installations on the same host
+
 ## 1.0.57
 - Added support for Wls/FMW 12.2.1.2
 - Changing indentation from "2" to "4" in wls_exec statements
